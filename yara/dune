@@ -1,0 +1,24 @@
+(library
+ (public_name yara)
+ (foreign_stubs
+  (names yara_stubs)
+  (language cxx)
+  (flags
+   :standard
+   -std=c++14
+   (:include c_flags.sexp)))
+ (c_library_flags
+  :standard
+  (:include c_library_flags.sexp)))
+
+(rule
+ (targets constants.ml)
+ (action
+  (with-stdout-to
+   constants.ml
+   (run ../codegen/main.exe))))
+
+(rule
+ (targets c_flags.sexp c_library_flags.sexp c_ctypes_cflags)
+ (action
+  (run ../discover/discover.exe)))
