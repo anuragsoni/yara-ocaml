@@ -184,9 +184,9 @@ extern "C"
         CAMLreturn(Val_unit);
     }
 
-    CAMLprim value yara_stubs_scanner_get_rules_matching(value scanner, value buf, value len)
+    CAMLprim value yara_stubs_scanner_get_rules_matching(value scanner, value buf, value pos, value len)
     {
-        CAMLparam3(scanner, buf, len);
+        CAMLparam4(scanner, buf, pos, len);
         CAMLlocal2(rules, cons);
         rules = Val_emptylist;
 
@@ -253,7 +253,8 @@ extern "C"
         yr_scanner_set_flags(Yr_scanner_val(scanner), SCAN_FLAGS_REPORT_RULES_MATCHING);
 
         caml_release_runtime_system();
-        int result = yr_scanner_scan_mem(Yr_scanner_val(scanner), static_cast<const uint8_t *>(Bytes_val(buf)), Long_val(len));
+        auto *buffer = static_cast<const uint8_t *>(Caml_ba_data_val(buf)) + pos;
+        int result = yr_scanner_scan_mem(Yr_scanner_val(scanner), buffer, Unsigned_long_val(len));
         caml_acquire_runtime_system();
 
         if (result != ERROR_SUCCESS)

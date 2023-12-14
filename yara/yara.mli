@@ -1,3 +1,5 @@
+type bigstring = (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+
 exception Yara_error of int * string
 
 (** Initializes the yara library. This function needs to be called before using any other yara functionality. *)
@@ -40,5 +42,5 @@ module Scanner : sig
 
   val create : Rules.t -> t
   val set_timeout : t -> int -> unit
-  val get_rules_matching : t -> bytes -> Rule.t list
+  val get_rules_matching : t -> ?pos:int -> ?len:int -> bigstring -> Rule.t list
 end

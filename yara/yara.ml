@@ -1,3 +1,5 @@
+type bigstring = (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+
 exception Yara_error of int * string
 
 let () = Callback.register_exception "yara exception" (Yara_error (-1, "<function name>"))
@@ -51,10 +53,31 @@ module Scanner = struct
 
   external get_rules_matching
     :  t
-    -> bytes
-    -> int
+    -> bigstring
+    -> pos:int
+    -> len:int
     -> Rule.t list
     = "yara_stubs_scanner_get_rules_matching"
 
-  let get_rules_matching t buf = get_rules_matching t buf (Bytes.length buf)
+  let get_rules_matching t ?(pos = 0) ?len buf =
+    let total_length = Bigarray.Array1.dim buf in
+    let len =
+      match len with
+      | None -> total_length - pos
+      | Some i -> i
+    in
+    if pos < 0
+    then invalid_arg (Printf.sprintf "get_rules_matching: Negative position %d" pos);
+    if len < 0
+    then invalid_arg (Printf.sprintf "get_rules_matching: Negative length %d" len);
+    if pos > total_length - len
+    then
+      invalid_arg
+        (Printf.sprintf
+           "get_rules_matching: pos + len > total_length: %d + %d > %d"
+           pos
+           len
+           total_length);
+    get_rules_matching t buf ~pos ~len
+  ;;
 end
