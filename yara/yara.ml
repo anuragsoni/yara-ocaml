@@ -8,10 +8,20 @@ external initialize : unit -> unit = "yara_stubs_initialize"
 external finalize : unit -> unit = "yara_stubs_finalize"
 
 module Rule = struct
+  module Yara_string = struct
+    type t =
+      { identifier : string
+      ; fixed_offset : int64 option
+      ; length : int
+      ; rule_index : int
+      }
+  end
+
   type t =
     { identifier : string
     ; tags : string list
     ; namespace : string option
+    ; strings : Yara_string.t list
     }
 end
 

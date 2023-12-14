@@ -1,3 +1,5 @@
 (executable
  (name main)
+ (preprocess
+  (pps ppx_jane))
  (libraries yara core))

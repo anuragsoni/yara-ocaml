@@ -235,11 +235,41 @@ extern "C"
                     namespace_ = Val_none;
                 }
 
+                CAMLlocal2(strings, strings_cons);
+                strings = Val_emptylist;
+                const YR_STRING *s;
+                yr_rule_strings_foreach(rule, s)
+                {
+                    CAMLlocal1(yr_str);
+                    yr_str = caml_alloc(4, 0);
+                    Store_field(yr_str, 0, caml_copy_string(s->identifier));
+
+                    if (s->fixed_offset == YR_UNDEFINED)
+                    {
+                        Store_field(yr_str, 1, Val_none);
+                    }
+                    else
+                    {
+                        CAMLlocal1(fixed_offset);
+                        fixed_offset = caml_alloc(1, Tag_some);
+                        Store_field(fixed_offset, 0, Int64_val(s->fixed_offset));
+                        Store_field(yr_str, 1, fixed_offset);
+                    }
+                    Store_field(yr_str, 2, Val_int(s->length));
+                    Store_field(yr_str, 3, Val_int(s->rule_idx));
+
+                    strings_cons = caml_alloc(2, Tag_cons);
+                    Store_field(strings_cons, 0, yr_str);
+                    Store_field(strings_cons, 1, strings);
+                    strings = strings_cons;
+                }
+
                 CAMLlocal1(ocaml_rule);
-                ocaml_rule = caml_alloc(3, 0);
+                ocaml_rule = caml_alloc(4, 0);
                 Store_field(ocaml_rule, 0, identifier);
                 Store_field(ocaml_rule, 1, tags);
                 Store_field(ocaml_rule, 2, namespace_);
+                Store_field(ocaml_rule, 3, strings);
                 (*static_cast<decltype(callback) *>(user_data))(ocaml_rule);
             }
 
