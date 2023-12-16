@@ -61,6 +61,34 @@ module Scanner = struct
   external create : Rules.t -> t = "yara_stubs_scanner_create"
   external set_timeout : t -> int -> unit = "yara_stubs_set_scanner_timeout"
 
+  external set_integer_variable
+    :  t
+    -> string
+    -> int64
+    -> unit
+    = "yara_stubs_scanner_set_int_variable"
+
+  external set_boolean_variable
+    :  t
+    -> string
+    -> bool
+    -> unit
+    = "yara_stubs_scanner_set_bool_variable"
+
+  external set_float_variable
+    :  t
+    -> string
+    -> float
+    -> unit
+    = "yara_stubs_scanner_set_float_variable"
+
+  external set_string_variable
+    :  t
+    -> string
+    -> string
+    -> unit
+    = "yara_stubs_scanner_set_string_variable"
+
   external get_rules_matching
     :  t
     -> bigstring

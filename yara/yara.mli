@@ -52,5 +52,9 @@ module Scanner : sig
 
   val create : Rules.t -> t
   val set_timeout : t -> int -> unit
+  val set_integer_variable : t -> string -> int64 -> unit
+  val set_float_variable : t -> string -> float -> unit
+  val set_string_variable : t -> string -> string -> unit
+  val set_boolean_variable : t -> string -> bool -> unit
   val get_rules_matching : t -> ?pos:int -> ?len:int -> bigstring -> Rule.t list
 end
