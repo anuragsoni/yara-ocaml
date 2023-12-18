@@ -1,4 +1,4 @@
-(lang dune 3.0)
+(lang dune 3.1)
 
 (name yara)
 
@@ -11,7 +11,7 @@
 (license "MPL-2.0")
 
 (source
- (github anuragsoni/yara-ocaml))
+ (sourcehut soni/yara-ocaml))
 
 (package
  (name yara)
